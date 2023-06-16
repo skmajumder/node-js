@@ -5,6 +5,8 @@ const fileSystem = require("fs");
 const http = require("http");
 const url = require("url");
 
+var slugify = require("slugify");
+
 // * Custom modules
 const replaceTemplate = require("./modules/replaceTemplate");
 
@@ -81,6 +83,8 @@ const dataObj = JSON.parse(data);
 // ** Server */
 const PORT = process.env.PORT || 8000;
 const localhost = "127.0.0.1";
+
+const slugs = dataObj.map((el) => slugify(el.productName, { lower: true }));
 
 // * Creating server
 const server = http.createServer((req, res) => {
