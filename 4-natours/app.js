@@ -1,18 +1,25 @@
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
-
-// * Middleware
-app.use(express.json());
 
 // * PORT Number
 const PORT = process.env.PORT || 3000;
+
+// * Middleware
+app.use(morgan('dev'));
+app.use(express.json());
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
 
 // * Read file (JSON)
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`, 'utf-8')
 );
 
+// * Route Handeler
 const rootRoute = async (req, res) => {
   res.status(200).json({
     status: 'success',
@@ -23,6 +30,7 @@ const rootRoute = async (req, res) => {
 const getAllTour = async (req, res) => {
   res.status(200).json({
     status: 'success',
+    requestAt: req.requestTime,
     error: false,
     results: tours.length,
     data: {
@@ -108,21 +116,55 @@ const deleteTour = async (req, res) => {
   });
 };
 
+const getAllUsers = async (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+const createUser = async (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+const getUser = async (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+const updateUser = async (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+const deleteUser = async (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
 // * Routes
 app.get('/', rootRoute);
 
-// app.get('/api/v1/tours', getAllTour);
-// app.post('/api/v1/tours', createTour);
-// app.get('/api/v1/tours/:id', getTour);
-// app.patch('/api/v1/tours/:id', updateTour);
-// app.delete('/api/v1/tours/:id', deleteTour);
+const tourRouter = express.Router();
+const userRouter = express.Router();
 
-app.route('/api/v1/tours').get(getAllTour).post(createTour);
-app
-  .route('/api/v1/tours/:id')
-  .get(getTour)
-  .patch(updateTour)
-  .delete(deleteTour);
+tourRouter.route('/').get(getAllTour).post(createTour);
+tourRouter.route('/:id').get(getTour).patch(updateTour).delete(deleteTour);
+
+userRouter.route('/').get(getAllUsers).post(createUser);
+userRouter.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
+
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
 
 app.listen(PORT, () => {
   console.log(`App listening on port: ${PORT}`);
