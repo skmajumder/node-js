@@ -6,45 +6,45 @@ const tourSchema = new Schema({
     type: String,
     required: [true, 'A tour must have a name'],
     unique: true,
-    trim: true,
+    trim: true
   },
   duration: {
     type: Number,
-    require: [true, 'A tour must have a duration'],
+    require: [true, 'A tour must have a duration']
   },
   maxGroupSize: {
     type: Number,
-    require: [true, 'A tour must have a group size'],
+    require: [true, 'A tour must have a group size']
   },
   difficulty: {
     type: String,
-    required: [true, 'A tour must have a difficulty'],
+    required: [true, 'A tour must have a difficulty']
   },
   ratingsAverage: {
     type: Number,
-    default: 4.5,
+    default: 4.5
   },
   ratingsQuantity: {
     type: Number,
-    default: 0,
+    default: 0
   },
   price: {
     type: Number,
-    required: [true, 'A tour must have a price'],
+    required: [true, 'A tour must have a price']
   },
   priceDiscount: Number,
   summary: {
     type: String,
     trim: true,
-    required: [true, 'A tour must have a summary'],
+    required: [true, 'A tour must have a summary']
   },
   description: {
     type: String,
-    trim: true,
+    trim: true
   },
   imageCover: {
     type: String,
-    required: [true, 'A tour must have a cover image'],
+    required: [true, 'A tour must have a cover image']
   },
   images: [String],
   createdAt: {
@@ -52,7 +52,11 @@ const tourSchema = new Schema({
     default: Date.now(),
     select: false
   },
-  startDates: [Date],
+  startDates: [Date]
+}, { toJSON: { virtuals: true }, toObject: { virtuals: true } });
+
+tourSchema.virtual('durationWeeks').get(function() {
+  return Math.ceil(this.duration / 7);
 });
 
 const Tour = mongoose.model('Tour', tourSchema);
