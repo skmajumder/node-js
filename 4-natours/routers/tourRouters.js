@@ -7,7 +7,9 @@ const router = express.Router();
 
 router
   .route('/top-5-tour')
-  .get(tourController.aliesTopTour, tourController?.getAllTours)
+  .get(tourController.aliesTopTour, tourController?.getAllTours);
+
+router.route('/tour-stats').get(tourController?.getTourStats);
 
 router
   .route('/')
